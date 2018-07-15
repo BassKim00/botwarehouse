@@ -1,15 +1,18 @@
-#!/usr/bin/env python
 import openpyxl
 import os
-import django
+from django import setup
 import datetime
+import sys
 
 if __name__ == "__main__":
+    proj_path = "/Users/woong/Documents/mirae"
+    sys.path.append(proj_path)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mirae.settings")
-    django.setup()
+    setup()
 
 from stock.models import *
 
+dir = os.path.dirname(__file__)
 '''
 excel insert
 '''
@@ -20,7 +23,7 @@ class ExcelData:
         pass
 
     def getExcelData(self):
-        excel_document = openpyxl.load_workbook('stock.xlsx')
+        excel_document = openpyxl.load_workbook(os.path.join(dir, 'stock03.xlsx'))
         sheet_name = excel_document.sheetnames[0]
         sheet = excel_document[sheet_name]
 
