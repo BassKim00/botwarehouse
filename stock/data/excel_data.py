@@ -23,7 +23,7 @@ class ExcelData:
         pass
 
     def getExcelData(self):
-        excel_document = openpyxl.load_workbook(os.path.join(dir, 'stock03.xlsx'))
+        excel_document = openpyxl.load_workbook(os.path.join(dir, 'test.xlsx'))
         sheet_name = excel_document.sheetnames[0]
         sheet = excel_document[sheet_name]
 
