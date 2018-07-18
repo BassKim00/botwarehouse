@@ -83,7 +83,15 @@ DATABASES = {
         'PASSWORD': os.environ['warehouse_pwd'],
         'HOST': os.environ['warehouse_host'],
         'PORT': 3306,
+        'OPTIONS': {
+            'charset': 'utf8',
+            'init_command': 'SET '
+                'storage_engine=INNODB,'
+                'character_set_connection=utf8,'
+                'collation_connection=utf8_bin'
+        }
     }
+
 }
 
 
