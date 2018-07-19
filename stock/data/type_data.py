@@ -18,33 +18,33 @@ class InfoData:
     def __init__(self):
         pass
 
-    def getInfoData(self):
-        rows = Stock.objects.filter(id=1)
+    def getTypeData(self):
+        rows = Stock.objects.filter()
 
         for row in rows:
-            if row.code is None:
-                if "보통주" in row.name:
-                    real_name = row.name.replace("보통주", "")
-                else:
-                    real_name = row.name
-                url = self.makeUrlString(real_name)
+            if row.businessType is None:
+                url = self.makeUrlString(row.code)
                 source_code = requests.get(url)
                 plain_text = source_code.text
                 soup = BeautifulSoup(plain_text, 'lxml')
-                tags = soup.findAll("td", class_="tit")
+                tags = soup.findAll("div", class_="trade_compare")
 
                 if(len(tags) > 0):
-                    m = re.compile(r'\d\d\d\d\d\d')
-                    code_match = m.search(str(tags[0]))
-                    row.code = code_match.group()
+                    soup_detail = BeautifulSoup(str(tags[0]), 'lxml')
+                    tags = soup_detail.findAll("a")
+
+                    m = re.compile(r'>(.*)</')
+                    type_match = m.search(str(tags[0]))
+                    busiType = type_match.group().replace(">", "").replace("</", "")
+                    row.businessType = busiType
                     row.save()
-                    print(code_match.group())
+                    print(busiType)
             else:
                 print(row.name)
 
-    def makeUrlString(self, real_name):
-        url = 'https://finance.naver.com/search/searchList.nhn?query='
-        url = url + real_name
+    def makeUrlString(self, code):
+        url = 'https://finance.naver.com/item/main.nhn?code='
+        url = url + code
         url = str(url.encode("euc-kr")).split('\'')[1]
         url = url.replace("\\x", "%")
         return url
@@ -52,4 +52,4 @@ class InfoData:
 
 if __name__ == '__main__':
     e = InfoData()
-    e.getInfoData()
+    e.getTypeData()
