@@ -4,7 +4,7 @@ from django.db import models
 class Stock(models.Model):
     name = models.CharField(max_length=64)
     code = models.CharField(max_length=64)
-    businessType = models.CharField(max_length=250)
+    businessType = models.CharField(max_length=250, null=True)
 
 
 class Stock_Data(models.Model):
