@@ -17,8 +17,10 @@ class Indicator_rsi():
     def __init__(self):
         self.data = {}
 
-    def get_result_indicator(self, result, price):
-        return {'result': result, 'price': price}
+    def get_result_indicator(self, result, price, date, stock):
+        rsi = Indicator_Rsi(stock=stock, date=date, type=result, price=price)
+        rsi.save()
+        return {'result': result, 'price': price, 'date': date}
 
     def collect_regular_price_in_pandas(self, stock):
         # 이 함수는 일봉 데이터를 읽어온다
@@ -30,6 +32,7 @@ class Indicator_rsi():
             'close': [],
             'open': [],
             'date': [],
+            'date_d': [],
         }
         for row in price_data:
             pandas_raw_data['high'].append(row.highest * 1.0)
@@ -37,6 +40,7 @@ class Indicator_rsi():
             pandas_raw_data['close'].append(row.close * 1.0)
             pandas_raw_data['open'].append(row.start * 1.0)
             pandas_raw_data['date'].append(row.date)
+            pandas_raw_data['date_d'].append(row.date)
 
         df = pd.DataFrame(pandas_raw_data)
         df.set_index('date', inplace=True)
@@ -45,22 +49,42 @@ class Indicator_rsi():
         return df
 
     def ta_rsi_indicator(self, stock):
-        price_main = self.collect_regular_price_in_pandas(stock=stock).close
-        rsi = talib.RSI(np.array(price_main.values, dtype=float), timeperiod=14)
-        print(len(rsi))
+        data = self.collect_regular_price_in_pandas(stock=stock)
+        price_main = data.close
+        date_main = data.date_d
 
-        for i in range(1, len(rsi)):
-            if rsi[i] > 0:
-                if (rsi[i] <= 30) and (rsi[i - 1] > 30):
-                    print(self.get_result_indicator('bid', price_main[i]))
-                elif (rsi[i] >= 70) and (rsi[i - 1] < 70):
-                    print(self.get_result_indicator('ask', price_main[i]))
+        rsi = talib.RSI(np.array(price_main.values, dtype=float), timeperiod=14)
+
+        # print("-------------------------")
+        # print(len(rsi))
+        # print(len(price_main))
+        # print(len(date_main))
+        # print("-------------------------")
+        try:
+            for i in range(1, len(rsi)):
+                if rsi[i] > 0:
+                    if (rsi[i] <= 30) and (rsi[i - 1] > 30):
+                        # print(self.get_result_indicator('bid', price_main[i], date_main[i], stock))
+                        self.get_result_indicator('bid', price_main[i], date_main[i], stock)
+                    elif (rsi[i] >= 70) and (rsi[i - 1] < 70):
+                        # print(self.get_result_indicator('ask', price_main[i], date_main[i], stock))
+                        self.get_result_indicator('ask', price_main[i], date_main[i], stock)
+        except Exception as e:
+            print(e)
+            print("-------------------------")
+            print(stock.name)
+            print(len(rsi))
+            print(len(price_main))
+            print(len(date_main))
+            print("-------------------------")
+            pass
                 # else:
                 #     print(self.get_result_indicator('wait', price_main[i]))
 
 
 if __name__ == '__main__':
     test = Indicator_rsi()
-
-    test.ta_rsi_indicator(stock=1)
+    stocks = Stock.objects.exclude(code='000000').all()
+    for stock in stocks:
+        test.ta_rsi_indicator(stock=stock)
 
