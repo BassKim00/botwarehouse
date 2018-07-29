@@ -27,6 +27,24 @@ class Indicator_Rsi(models.Model):
     class Meta:
         unique_together = (("stock", "date",),)
 
+class Indicator_Macd(models.Model):
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    date = models.DateField()
+    type = models.CharField(max_length=3)
+    price = models.IntegerField()
+
+    class Meta:
+        unique_together = (("stock", "date",),)
+
+class Indicator_Wr(models.Model):
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    date = models.DateField()
+    type = models.CharField(max_length=3)
+    price = models.IntegerField()
+
+    class Meta:
+        unique_together = (("stock", "date",),)
+
 class Indicator_Result(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     indicator = models.CharField(max_length=128)
