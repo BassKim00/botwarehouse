@@ -19,9 +19,10 @@ class InfoData:
         pass
 
     def getTypeData(self):
-        rows = Stock.objects.filter()
+        rows = Stock.objects.exclude(code='000000')
 
         for row in rows:
+
             if row.businessType is None:
                 url = self.makeUrlString(row.code)
                 source_code = requests.get(url)
@@ -29,18 +30,18 @@ class InfoData:
                 soup = BeautifulSoup(plain_text, 'lxml')
                 tags = soup.findAll("div", class_="trade_compare")
 
-                if(len(tags) > 0):
+                if len(tags) > 0:
                     soup_detail = BeautifulSoup(str(tags[0]), 'lxml')
                     tags = soup_detail.findAll("a")
 
                     m = re.compile(r'>(.*)</')
                     type_match = m.search(str(tags[0]))
                     busiType = type_match.group().replace(">", "").replace("</", "")
-                    row.businessType = busiType
-                    row.save()
+                    # row.businessType = busiType
+                    # row.save()
                     print(busiType)
             else:
-                print(row.name)
+                print(row.id)
 
     def makeUrlString(self, code):
         url = 'https://finance.naver.com/item/main.nhn?code='
