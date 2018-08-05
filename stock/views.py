@@ -26,7 +26,7 @@ def get_stock_estimate(request):
             bid = 0
             ask = 0
 
-            score = 40
+            score = [50, 30, 15, 5]
             for i in range(0, len(sensitive)):
                 if sensitive[i] == "WR":
                     type = Indicator_Wr.objects.filter(stock=stock).order_by('-id').all()[0].type
@@ -38,10 +38,9 @@ def get_stock_estimate(request):
                     type = Indicator_Macd.objects.filter(stock=stock).order_by('-id').all()[0].type
 
                 if type == 'ask':
-                    ask+=score
+                    ask+=score[i]
                 else:
-                    bid+=score
-                score-=10
+                    bid+=score[i]
 
 
             json = {
