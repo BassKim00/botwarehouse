@@ -61,8 +61,12 @@ class Indicator_Result(models.Model):
     indicator = models.CharField(max_length=128)
     profit = models.FloatField()
 
+class Indicator_Sensitive(models.Model):
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    sensitive = models.CharField(max_length=256)
+
 class User(models.Model):
-    user_code = models.CharField(max_length=128)
+    naver_id = models.CharField(max_length=128)
 
 class User_stock(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
