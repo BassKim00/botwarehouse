@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 # Create your models here.
 class Stock(models.Model):
@@ -45,8 +46,24 @@ class Indicator_Wr(models.Model):
     class Meta:
         unique_together = (("stock", "date",),)
 
+class Indicator_Cross(models.Model):
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    date = models.DateField()
+    type = models.CharField(max_length=3)
+    price = models.IntegerField()
+
+    class Meta:
+        unique_together = (("stock", "date",),)
+
+
 class Indicator_Result(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     indicator = models.CharField(max_length=128)
     profit = models.FloatField()
 
+class User(models.Model):
+    user_code = models.CharField(max_length=128)
+
+class User_stock(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)

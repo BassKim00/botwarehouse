@@ -10,32 +10,32 @@ if __name__ == "__main__":
 
 from stock.models import *
 
-class Indicator_wr():
+class Indicator_cross():
     def __init__(self):
         self.data = {}
 
     def get_result_indicator(self, stock):
-        indicatiors = Indicator_Wr.objects.filter(stock=stock).all()
+        indicatiors = Indicator_Cross.objects.filter(stock=stock).all()
         stock_count = 0
         last_price = 0
         current_price = 1000000
-        for wr in indicatiors:
-            if wr.type == "bid":
-                current_price -= wr.price
+        for cross in indicatiors:
+            if cross.type == "bid":
+                current_price -= cross.price
                 stock_count += 1
-            elif wr.type == "ask":
+            elif cross.type == "ask":
                 if stock_count > 0:
-                    current_price += wr.price
+                    current_price += cross.price
                     stock_count -= 1
-            last_price = wr.price
+            last_price = cross.price
 
         profit = (current_price+(stock_count*last_price) - 1000000)/1000000
-        res = Indicator_Result(stock=stock, indicator='WR', profit=profit)
+        res = Indicator_Result(stock=stock, indicator='CROSS', profit=profit)
         res.save()
 
 
 if __name__ == '__main__':
-    test = Indicator_wr()
+    test = Indicator_cross()
     stocks = Stock.objects.exclude(code='000000').all()
     for stock in stocks:
         test.get_result_indicator(stock=stock)
