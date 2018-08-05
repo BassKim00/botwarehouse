@@ -21,32 +21,33 @@ def get_stock_estimate(request):
         try:
             stock = user_stock.stock
             sensitive = Indicator_Sensitive.objects.filter(stock=stock).all()[0].sensitive
-            sensitive = sensitive.replace('[', '').replace(']', '').split(',')
-            first = sensitive[0].replace('(', '').replace('\'', '')
-            second = sensitive[2].replace('(', '').replace('\'', '').replace(' ', '')
 
-            if first == "WR":
-                first_idc = Indicator_Wr.objects.filter(stock=stock).order_by('-id').all()[0]
-            elif first == "CROSS":
-                first_idc = Indicator_Cross.objects.filter(stock=stock).order_by('-id').all()[0]
-            elif first == "RSI":
-                first_idc = Indicator_Rsi.objects.filter(stock=stock).order_by('-id').all()[0]
-            elif first == "MACD":
-                first_idc = Indicator_Macd.objects.filter(stock=stock).order_by('-id').all()[0]
-            
-            if second == "WR":
-                second_idc = Indicator_Wr.objects.filter(stock=stock).order_by('-id').all()[0]
-            elif second == "CROSS":
-                second_idc = Indicator_Cross.objects.filter(stock=stock).order_by('-id').all()[0]
-            elif second == "RSI":
-                second_idc = Indicator_Rsi.objects.filter(stock=stock).order_by('-id').all()[0]
-            elif second == "MACD":
-                second_idc = Indicator_Macd.objects.filter(stock=stock).order_by('-id').all()[0]
+            sensitive = sensitive.replace('[', '').replace(']', '').replace(' ', '').replace('\'', '').split(',')
+            bid = 0
+            ask = 0
+
+            score = 40
+            for i in range(0, len(sensitive)):
+                if sensitive[i] == "WR":
+                    type = Indicator_Wr.objects.filter(stock=stock).order_by('-id').all()[0].type
+                elif sensitive[i] == "CROSS":
+                    type = Indicator_Cross.objects.filter(stock=stock).order_by('-id').all()[0].type
+                elif sensitive[i] == "RSI":
+                    type = Indicator_Rsi.objects.filter(stock=stock).order_by('-id').all()[0].type
+                elif sensitive[i] == "MACD":
+                    type = Indicator_Macd.objects.filter(stock=stock).order_by('-id').all()[0].type
+
+                if type == 'ask':
+                    ask+=score
+                else:
+                    bid+=score
+                score-=10
+
 
             json = {
                 'stock': stock.name,
-                first: first_idc.type,
-                second: second_idc.type
+                'ask': ask,
+                'bid': bid
             }
             result_json.append(json)
         except Exception as e:
