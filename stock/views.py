@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
+from django.http import JsonResponse
 from django.http import HttpResponse
 from stock.models import *
 
@@ -9,26 +10,47 @@ def index(request):
     return HttpResponse("Hello, world. You're at the data index.")
 
 
-def get_stock_estimate(user=None):
-    reuslt_json = []
-    stock_list = Stock.objects.all()
-    for stock in stock_list:
+def get_stock_estimate(request, user_id=None):
+    user = User.objects.filter(id=user_id).all()[0]
+    result_json = []
+    stock_list = User_stock.objects.filter(user=user).all()
+    for user_stock in stock_list:
         try:
-            wr = Indicator_Wr.objects.filter(stock=stock).last()
-            macd = Indicator_Macd.objects.filter(stock=stock).last()
-            rsi = Indicator_Rsi.objects.filter(stock=stock).last()
+            stock = user_stock.stock
+            sensitive = Indicator_Sensitive.objects.filter(stock=stock).all()[0].sensitive
+            sensitive = sensitive.replace('[', '').replace(']', '').split(',')
+            first = sensitive[0].replace('(', '').replace('\'', '')
+            second = sensitive[2].replace('(', '').replace('\'', '').replace(' ', '')
+            
+            if first == "WR":
+                first_idc = Indicator_Wr.objects.filter(stock=stock).order_by('-id').all()[0]
+            elif first == "CROSS":
+                first_idc = Indicator_Cross.objects.filter(stock=stock).order_by('-id').all()[0]
+            elif first == "RSI":
+                first_idc = Indicator_Rsi.objects.filter(stock=stock).order_by('-id').all()[0]
+            elif first == "MACD":
+                first_idc = Indicator_Macd.objects.filter(stock=stock).order_by('-id').all()[0]
+            
+            if second == "WR":
+                second_idc = Indicator_Wr.objects.filter(stock=stock).order_by('-id').all()[0]
+            elif second == "CROSS":
+                second_idc = Indicator_Cross.objects.filter(stock=stock).order_by('-id').all()[0]
+            elif second == "RSI":
+                second_idc = Indicator_Rsi.objects.filter(stock=stock).order_by('-id').all()[0]
+            elif second == "MACD":
+                second_idc = Indicator_Macd.objects.filter(stock=stock).order_by('-id').all()[0]
 
             json = {
                 'stock': stock.name,
-                'wr': wr.type,
-                'macd': macd.type,
-                'rsi': rsi.type
+                first: first_idc.type,
+                second: second_idc.type
             }
-            reuslt_json.append(json)
+            result_json.append(json)
         except Exception as e:
+            print(e)
             pass
 
-    return HttpResponse(reuslt_json)
+    return JsonResponse(result_json)
 
 
 def get_stock_list(request):
@@ -40,9 +62,8 @@ def get_stock_list(request):
     else:
         naver_id = 'uram999'
 
-    user_id = User.objects.filter(naver_id=naver_id)
-    print(user_id.id)
-    stock_list = User_stock.objects.filter(user_id=user_id.id).all()
+    user_info = User.objects.filter(naver_id=naver_id).first()
+    stock_list = User_stock.objects.filter(user_id=user_info.id).all()
 
     for stock in stock_list:
         try:
@@ -60,4 +81,4 @@ def get_stock_list(request):
 
     print(result_json)
 
-    return HttpResponse(result_json)
+    return HttpResponse(json.dumps(result_json), content_type="application/json")
