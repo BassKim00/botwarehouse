@@ -1,8 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.http import JsonResponse
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from stock.models import *
 
 
@@ -10,9 +9,12 @@ def index(request):
     return HttpResponse("Hello, world. You're at the data index.")
 
 
-def get_stock_estimate(request, user_id=1):
-
-    user = User.objects.filter(id=user_id).all()[0]
+def get_stock_estimate(request):
+    if request.method == 'GET':
+        naver_id = request.GET['user_id']
+    else:
+        naver_id = 'uram999'
+    user = User.objects.filter(naver_id=naver_id).all()[0]
     result_json = []
     stock_list = User_stock.objects.filter(user=user).all()
     for user_stock in stock_list:
@@ -51,10 +53,10 @@ def get_stock_estimate(request, user_id=1):
             print(e)
             pass
 
-    return JsonResponse(result_json)
+    return JsonResponse(result_json, safe=False)
 
 
-def get_stock_list(request, safe=False):
+def get_stock_list(request):
     print(request)
     result_json = []
 
