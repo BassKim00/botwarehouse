@@ -10,7 +10,8 @@ def index(request):
     return HttpResponse("Hello, world. You're at the data index.")
 
 
-def get_stock_estimate(request, user_id=None):
+def get_stock_estimate(request, user_id=1):
+
     user = User.objects.filter(id=user_id).all()[0]
     result_json = []
     stock_list = User_stock.objects.filter(user=user).all()
@@ -21,7 +22,7 @@ def get_stock_estimate(request, user_id=None):
             sensitive = sensitive.replace('[', '').replace(']', '').split(',')
             first = sensitive[0].replace('(', '').replace('\'', '')
             second = sensitive[2].replace('(', '').replace('\'', '').replace(' ', '')
-            
+
             if first == "WR":
                 first_idc = Indicator_Wr.objects.filter(stock=stock).order_by('-id').all()[0]
             elif first == "CROSS":
@@ -53,7 +54,7 @@ def get_stock_estimate(request, user_id=None):
     return JsonResponse(result_json)
 
 
-def get_stock_list(request):
+def get_stock_list(request, safe=False):
     print(request)
     result_json = []
 
@@ -81,4 +82,4 @@ def get_stock_list(request):
 
     print(result_json)
 
-    return HttpResponse(json.dumps(result_json), content_type="application/json")
+    return JsonResponse(result_json, safe=False)
