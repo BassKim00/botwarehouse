@@ -57,7 +57,6 @@ def get_stock_estimate(request):
 
 
 def get_stock_list(request):
-    print(request)
     result_json = []
 
     if request.method == 'GET':
@@ -81,7 +80,5 @@ def get_stock_list(request):
 
         except Exception as e:
             pass
-
-    print(result_json)
 
     return JsonResponse(result_json, safe=False)
