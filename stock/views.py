@@ -8,7 +8,7 @@ from stock.models import *
 def index(request):
     return HttpResponse("Hello, world. You're at the data index.")
 
-def get_stock_estimate(request, user_id=None):
+def get_stock_estimate(request, user_id=1):
     user = User.objects.filter(id=user_id).all()[0]
     reuslt_json = []
     stock_list = User_stock.objects.filter(user=user).all()
@@ -19,7 +19,7 @@ def get_stock_estimate(request, user_id=None):
             sensitive = sensitive.replace('[', '').replace(']', '').split(',')
             first = sensitive[0].replace('(', '').replace('\'', '')
             second = sensitive[2].replace('(', '').replace('\'', '').replace(' ', '')
-            
+
             if first == "WR":
                 first_idc = Indicator_Wr.objects.filter(stock=stock).order_by('-id').all()[0]
             elif first == "CROSS":
@@ -43,6 +43,23 @@ def get_stock_estimate(request, user_id=None):
                 'stock': stock.name,
                 first: first_idc.type,
                 second: second_idc.type
+            }
+            reuslt_json.append(json)
+        except Exception as e:
+            print(e)
+            pass
+
+    return HttpResponse(reuslt_json)
+
+def get_user_stock(request, user_id=1):
+    user = User.objects.filter(id=user_id).all()[0]
+    reuslt_json = []
+    stock_list = User_stock.objects.filter(user=user).all()
+    for user_stock in stock_list:
+        try:
+            stock = user_stock.stock
+            json = {
+                'stock': stock.name
             }
             reuslt_json.append(json)
         except Exception as e:
