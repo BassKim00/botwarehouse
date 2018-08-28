@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse, JsonResponse
 from stock.models import *
+from stock.data.news import NewsData
 
 
 def index(request):
@@ -80,5 +81,33 @@ def get_stock_list(request):
 
         except Exception as e:
             pass
+
+    return JsonResponse(result_json, safe=False)
+
+def get_stock_news(request):
+    result_json = []
+
+    if request.method == 'GET':
+        stock_id = request.GET['stock_id']
+    else:
+        stock_id = '1'
+
+    stock = Stock.objects.filter(id=stock_id).all()[0]
+    NewsData.stock_news(stock=stock)
+    news = Stock_News.objects.filter(stock=stock).order_by(-id).all()
+    i = 0
+    for n in news:
+        try:
+            json = {
+                'title': n.title,
+                'link': n.link
+            }
+            result_json.append(json)
+
+        except Exception as e:
+            pass
+        i = i+1
+        if i==4:
+            break
 
     return JsonResponse(result_json, safe=False)
