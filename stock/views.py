@@ -93,8 +93,9 @@ def get_stock_news(request):
         stock_id = '1'
 
     stock = Stock.objects.filter(id=stock_id).all()[0]
-    NewsData.stock_news(stock=stock)
-    news = Stock_News.objects.filter(stock=stock).order_by(-id).all()
+    e = NewsData()
+    e.stock_news(stock=stock)
+    news = Stock_News.objects.filter(stock=stock).order_by('-id').all()
     i = 0
     for n in news:
         try:
@@ -107,7 +108,7 @@ def get_stock_news(request):
         except Exception as e:
             pass
         i = i+1
-        if i==4:
+        if i==5:
             break
 
     return JsonResponse(result_json, safe=False)

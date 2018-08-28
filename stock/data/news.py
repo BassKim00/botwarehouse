@@ -50,8 +50,8 @@ class NewsData:
 
         for link, title in unique_news.items():
             try:
-                body = "[" + title + "]" + '\n\n' + link
-                print(body)
+                # body = "[" + title + "]" + '\n\n' + link
+                # print(body)
                 news = Stock_News(stock=stock, link=link, title=title)
                 news.save()
             except Exception as e:
