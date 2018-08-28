@@ -71,3 +71,11 @@ class User(models.Model):
 class User_stock(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+
+class Stock_News(models.Model):
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    date = models.DateField()
+    link = models.CharField(max_length=256)
+
+    class Meta:
+        unique_together = (("stock", "link",),)
