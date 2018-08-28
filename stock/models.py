@@ -67,6 +67,8 @@ class Indicator_Sensitive(models.Model):
 
 class User(models.Model):
     naver_id = models.CharField(max_length=128)
+    fb_id = models.CharField(max_length=128)
+    charged_yn = models.CharField(max_length=10, default='n')
 
 class User_stock(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
