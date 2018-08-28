@@ -76,8 +76,8 @@ class User_stock(models.Model):
 
 class Stock_News(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
-    date = models.DateField()
-    link = models.CharField(max_length=256)
+    title = models.CharField(max_length=512, null=True)
+    link = models.CharField(max_length=512)
 
     class Meta:
         unique_together = (("stock", "link",),)
