@@ -10,6 +10,21 @@ def index(request):
     return HttpResponse("Hello, world. You're at the data index.")
 
 
+def get_user_id(request):
+    if request.method == 'GET':
+        fb_id = request.GET['fb_id']
+    else:
+        fb_id = '2163947200343823'
+
+    user = User.objects.filter(fb_id=fb_id).first()
+
+    json = {
+        'naver_id': user.naver_id,
+    }
+
+    return JsonResponse(json, safe=False)
+
+
 def get_stock_estimate(request):
 
     if request.method == 'GET':
@@ -115,8 +130,6 @@ def get_stock_list(request):
 
     if request.method == 'GET':
         naver_id = request.GET['user_id']
-    else:
-        naver_id = 'uram999'
 
     user_info = User.objects.filter(naver_id=naver_id).first()
     stock_list = User_stock.objects.filter(user_id=user_info.id).all()
@@ -139,34 +152,93 @@ def get_stock_list(request):
     return JsonResponse(result_json, safe=False)
 
 
+def search_stock_list(request):
+    result_json = []
+
+    if request.method == 'GET':
+        stock_code = request.GET['code']
+
+    stock_info = Stock.objects.filter(code=stock_code).first()
+
+    try:
+        json = {
+            'success': True,
+            'stock_code': stock_info.code,
+            'stock_name': stock_info.name,
+            'stock_type': stock_info.businessType
+        }
+
+        result_json.append(json)
+
+    except Exception as e:
+        print(e)
+        pass
+
+    return JsonResponse(result_json, safe=False)
+
+
 def add_stock_list(request):
     result_json = []
 
     if request.method == 'GET':
         naver_id = request.GET['user_id']
-        fb_id = request.GET['fb_id']
         stock_code = request.GET['code']
-    else:
-        naver_id = 'uram999'
 
+    stock_info = Stock.objects.filter(code=stock_code).first()
     user_info = User.objects.filter(naver_id=naver_id).first()
-    stock_list = User_stock.objects.filter(user_id=user_info.id).all()
 
-    for stock in stock_list:
-        try:
-            stock_data = Stock.objects.filter(id=stock.stock_id).first()
+    try:
+        user_stock = User_stock(stock_id=stock_info.id, user_id=user_info.id)
+        user_stock.save()
 
-            json = {
-                'stock_name': stock_data.name,
-                'stock_code': stock_data.code,
-                'stock_busiType': stock_data.businessType
-            }
-            result_json.append(json)
+        json = {
+            'success': True,
+            'stock_code': stock_info.code,
+            'stock_name': stock_info.name,
+            'stock_type': stock_info.businessType
+        }
 
-        except Exception as e:
-            pass
+        result_json.append(json)
+
+    except Exception as e:
+        print(e)
+        pass
 
     return JsonResponse(result_json, safe=False)
+
+
+def update_stock_list(request):
+    result_json = []
+
+    if request.method == 'GET':
+        naver_id = request.GET['user_id']
+        stock_code = request.GET['code']
+        id = request.GET['id']
+
+    user_info = User.objects.filter(naver_id=naver_id).first()
+    stock_info = Stock.objects.filter(code=stock_code).first()
+
+    try:
+        user_stock = User_stock.objects.filter(id=id).filter(user_id=user_info.id).first()
+        print(user_stock.stock_id)
+        user_stock.stock_id = stock_info.id
+        user_stock.save()
+
+        json = {
+            'success': True,
+            'stock_code': stock_info.code,
+            'stock_name': stock_info.name,
+            'stock_type': stock_info.businessType
+        }
+
+        result_json.append(json)
+
+    except Exception as e:
+        print(e)
+        pass
+
+    return JsonResponse(result_json, safe=False)
+
 
 def get_stock_news(request):
     result_json = []
@@ -192,7 +264,7 @@ def get_stock_news(request):
         except Exception as e:
             pass
         i = i+1
-        if i==5:
+        if i == 5:
             break
 
     return JsonResponse(result_json, safe=False)
