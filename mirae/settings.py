@@ -79,9 +79,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "stock",
-        'USER': os.environ['warehouse_user'],
-        'PASSWORD': os.environ['warehouse_pwd'],
-        'HOST': os.environ['warehouse_host'],
+        'USER': "stock",
+        'PASSWORD': "botwarehouse",
+        'HOST':"stock.chxjz2sd0mik.ap-northeast-2.rds.amazonaws.com" ,
         'PORT': 3306,
         'OPTIONS': {
             'charset': 'utf8',
@@ -93,7 +93,6 @@ DATABASES = {
     }
 
 }
-
 
 
 # Password validation
