@@ -50,8 +50,10 @@ class InfoData:
             df['date'] = pd.to_datetime(df['date'])
             # # # 일자(date)를 기준으로 오름차순 정렬
             df = df.sort_values(by=['date'], ascending=False)
-            print(df.ix[1, 'close'])
-            break
+            stock_data = Stock_Data(stock=row, date=df.ix[1, 'date'], start=df.ix[1, 'open'], highest=df.ix[1, 'high'],
+                                        lowest=df.ix[1, 'low'], close=df.ix[1, 'close'], volume=df.ix[1, 'volume'])
+            stock_data.save()
+
 
 
 if __name__ == '__main__':
