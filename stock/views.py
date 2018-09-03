@@ -244,11 +244,11 @@ def get_stock_news(request):
     result_json = []
 
     if request.method == 'GET':
-        stock_id = request.GET['stock_id']
+        code = request.GET['code']
     else:
-        stock_id = '1'
+        code = '021240'
 
-    stock = Stock.objects.filter(id=stock_id).all()[0]
+    stock = Stock.objects.filter(code=code).all()[0]
     e = NewsData()
     e.stock_news(stock=stock)
     news = Stock_News.objects.filter(stock=stock).order_by('-id').all()
