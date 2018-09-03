@@ -188,7 +188,8 @@ def add_stock_list(request):
     user_info = User.objects.filter(naver_id=naver_id).first()
 
     try:
-        user_stock = User_stock(stock_id=stock_info.id, user_id=user_info.id)
+        user_stock = User_stock.objects.filter(stock_id='639').filter(user_id=user_info.id).first()
+        user_stock.stock_id = stock_info.id
         user_stock.save()
 
         json = {
