@@ -212,23 +212,31 @@ def update_stock_list(request):
 
     if request.method == 'GET':
         naver_id = request.GET['user_id']
-        stock_code = request.GET['code']
-        id = request.GET['id']
+        new_stock_code = request.GET['new_code']
+        pre_stock_code = request.GET['pre_code']
 
     user_info = User.objects.filter(naver_id=naver_id).first()
-    stock_info = Stock.objects.filter(code=stock_code).first()
+    new_stock_info = Stock.objects.filter(code=new_stock_code).first()
+    pre_stock_info = Stock.objects.filter(code=pre_stock_code).first()
 
     try:
-        user_stock = User_stock.objects.filter(id=id).filter(user_id=user_info.id).first()
+        user_stock = User_stock.objects.filter(stock_id=pre_stock_info.id).filter(user_id=user_info.id).first()
         print(user_stock.stock_id)
-        user_stock.stock_id = stock_info.id
+        user_stock.stock_id = new_stock_info.id
         user_stock.save()
 
         json = {
             'success': True,
-            'stock_code': stock_info.code,
-            'stock_name': stock_info.name,
-            'stock_type': stock_info.businessType
+            'new_stock': {
+                'stock_code': new_stock_info.code,
+                'stock_name': new_stock_info.name,
+                'stock_type': new_stock_info.businessType
+            },
+            'pre_stock' :{
+                'stock_code': pre_stock_info.code,
+                'stock_name': pre_stock_info.name,
+                'stock_type': pre_stock_info.businessType
+            }
         }
 
         result_json.append(json)
