@@ -80,7 +80,36 @@ class Indicator_rsi():
             pass
                 # else:
                 #     print(self.get_result_indicator('wait', price_main[i]))
+    
+    def latest_ta_rsi_indicator(self, stock):
+        data = self.collect_regular_price_in_pandas(stock=stock)
+        price_main = data.close
+        date_main = data.date_d
 
+        rsi = talib.RSI(np.array(price_main.values, dtype=float), timeperiod=14)
+
+        # print("-------------------------")
+        # print(len(rsi))
+        # print(len(price_main))
+        # print(len(date_main))
+        # print("-------------------------")
+        try:
+            if rsi[-1] > 0:
+                if (rsi[-1] <= 30) and (rsi[-2] > 30):
+                    # print(self.get_result_indicator('bid', price_main[-1], date_main[-1], stock))
+                    self.get_result_indicator('bid', price_main[-1], date_main[-1], stock)
+                elif (rsi[-1] >= 70) and (rsi[-2] < 70):
+                    # print(self.get_result_indicator('ask', price_main[-1], date_main[-1], stock))
+                    self.get_result_indicator('ask', price_main[-1], date_main[-1], stock)
+        except Exception as e:
+            print(e)
+            print("-------------------------")
+            print(stock.name)
+            print(len(rsi))
+            print(len(price_main))
+            print(len(date_main))
+            print("-------------------------")
+            pass
 
 if __name__ == '__main__':
     test = Indicator_rsi()

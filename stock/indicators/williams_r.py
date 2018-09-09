@@ -77,6 +77,32 @@ class Indicator_wr():
             print("-------------------------")
             pass
 
+    def latest_ta_wr_indicator(self, stock):
+        data = self.collect_regular_price_in_pandas(stock=stock)
+        price_main = data
+        date_main = data.date_d
+        will_r = talib.WILLR(price_main['high'].values, price_main['low'].values, price_main['close'].values,
+                             timeperiod=14)
+        print("-------------------------")
+        print(len(will_r))
+        print(len(price_main))
+        print(len(date_main))
+        print("-------------------------")
+
+        try:
+            if will_r[-2] < -80 and will_r[-1] > -80:
+                self.get_result_indicator('bid', price_main['close'][-1], date_main[-1], stock)
+            elif will_r[-2] > -20 and will_r[-1] < -20:
+                self.get_result_indicator('ask', price_main['close'][-1], date_main[-1], stock)
+        except Exception as e:
+            print(e)
+            print("-------------------------")
+            print(stock.name)
+            print(len(will_r))
+            print(len(price_main))
+            print(len(date_main))
+            print("-------------------------")
+            pass
 
 if __name__ == '__main__':
     test = Indicator_wr()

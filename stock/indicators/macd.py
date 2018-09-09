@@ -71,6 +71,29 @@ class Indicator_macd():
             print(len(date_main))
             print("-------------------------")
             pass
+        
+    def latest_ta_macd_indicator(self, stock):
+        data = self.collect_regular_price_in_pandas(stock=stock)
+        price_main = data.close
+        date_main = data.date_d
+        macd, macdsignal, macdhist = talib.MACD(price_main.values, fastperiod=12, slowperiod=26, signalperiod=9)
+        print(macd)
+        print(macdsignal)
+        print(macdhist)
+        try:
+            if macdhist[-1] > 0 and macdhist[-2] < 0:
+                self.get_result_indicator('bid', price_main[-1], date_main[-1], stock)
+            elif macdhist[-1] < 0 and macdhist[-2] > 0:
+                self.get_result_indicator('ask', price_main[-1], date_main[-1], stock)
+        except Exception as e:
+            print(e)
+            print("-------------------------")
+            print(stock.name)
+            print(len(macdhist))
+            print(len(price_main))
+            print(len(date_main))
+            print("-------------------------")
+            pass
 
 if __name__ == '__main__':
     test = Indicator_macd()

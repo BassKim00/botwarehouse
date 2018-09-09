@@ -60,6 +60,9 @@ class Indicator_Result(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     indicator = models.CharField(max_length=128)
     profit = models.FloatField()
+    stock_count = models.IntegerField()
+    last_price = models.IntegerField()
+    current_price = models.IntegerField()
 
 class Indicator_Sensitive(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)

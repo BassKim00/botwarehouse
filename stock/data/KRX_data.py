@@ -11,7 +11,12 @@ if __name__ == "__main__":
     setup()
 
 from stock.models import *
-
+from stock.indicators.result import *
+from stock.indicators.golden_dead_cross import *
+from stock.indicators.macd import *
+from stock.indicators.rsi import *
+from stock.indicators.williams_r import *
+from stock.indicators.sensitive import *
 
 class InfoData:
 
@@ -53,6 +58,22 @@ class InfoData:
             stock_data = Stock_Data(stock=row, date=df.ix[1, 'date'], start=df.ix[1, 'open'], highest=df.ix[1, 'high'],
                                         lowest=df.ix[1, 'low'], close=df.ix[1, 'close'], volume=df.ix[1, 'volume'])
             stock_data.save()
+
+            cross = Indicator_cross()
+            cross.latest_ta_golden_indicator(row)
+            macd = Indicator_macd()
+            macd.latest_ta_macd_indicator(row)
+            rsi = Indicator_rsi()
+            rsi.latest_ta_rsi_indicator(row)
+            wr = Indicator_wr()
+            wr.latest_ta_wr_indicator(row)
+
+            result = Indicator_Results()
+            result.latest_result_indicator(row)
+
+            sensitive = Senstive()
+            sensitive.get_sensitvie(row)
+
 
 
 

@@ -73,6 +73,29 @@ class Indicator_cross():
             print("-------------------------")
             pass
 
+    def latest_ta_golden_indicator(self, stock):
+        data = self.collect_regular_price_in_pandas(stock=stock)
+        price_main = data.close
+        date_main = data.date_d
+
+        ma5 = talib.SMA(price_main, timeperiod=5)
+        ma20 = talib.SMA(price_main, timeperiod=10)
+        ma60 = talib.SMA(price_main, timeperiod=60)
+        try:
+            if ma5[-2] < ma60[-2] and ma5[-1] > ma60[-1]:
+                if ma20[-1] > ma60[-1]:
+                    self.get_result_indicator('bid', price_main[-1], date_main[-1], stock)
+            elif ma5[-2] > ma60[-2]  and ma5[-1] < ma60[-1]:
+                if ma20[-1] < ma60[-1]:
+                    self.get_result_indicator('ask', price_main[-1], date_main[-1], stock)
+        except Exception as e:
+            print(e)
+            print("-------------------------")
+            print(stock.name)
+            print(len(price_main))
+            print(len(date_main))
+            print("-------------------------")
+            pass
 
 
 if __name__ == '__main__':
