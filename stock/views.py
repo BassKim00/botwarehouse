@@ -161,12 +161,18 @@ def search_stock_list(request):
     stock_info = Stock.objects.filter(code=stock_code).first()
 
     try:
-        json = {
-            'success': True,
-            'stock_code': stock_info.code,
-            'stock_name': stock_info.name,
-            'stock_type': stock_info.businessType
-        }
+        if isinstance(stock_info, type(None)):
+            json = {
+                'success': False,
+                'msg': "Not Vaild Code"
+            }
+        else:
+            json = {
+                'success': True,
+                'stock_code': stock_info.code,
+                'stock_name': stock_info.name,
+                'stock_type': stock_info.businessType
+            }
 
         result_json.append(json)
 
