@@ -4,7 +4,7 @@ import numpy as np
 import sys
 
 if __name__ == "__main__":
-    proj_path = "/Users/immin-yeong/2018_stock/botwarehouse"
+    proj_path = "/Users/woong/Documents/mirae"
     sys.path.append(proj_path)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mirae.settings")
     setup()
@@ -67,9 +67,9 @@ class Indicator_cross():
         except Exception as e:
             print(e)
             print("-------------------------")
-            print(stock.name)
-            print(len(price_main))
-            print(len(date_main))
+            # print(stock.name)
+            # print(len(price_main))
+            # print(len(date_main))
             print("-------------------------")
             pass
 

@@ -72,10 +72,10 @@ class Indicator_rsi():
         except Exception as e:
             print(e)
             print("-------------------------")
-            print(stock.name)
-            print(len(rsi))
-            print(len(price_main))
-            print(len(date_main))
+            # print(stock.name)
+            # print(len(rsi))
+            # print(len(price_main))
+            # print(len(date_main))
             print("-------------------------")
             pass
                 # else:

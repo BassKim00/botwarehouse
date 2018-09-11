@@ -55,11 +55,11 @@ class Indicator_wr():
         date_main = data.date_d
         will_r = talib.WILLR(price_main['high'].values, price_main['low'].values, price_main['close'].values,
                              timeperiod=14)
-        print("-------------------------")
-        print(len(will_r))
-        print(len(price_main))
-        print(len(date_main))
-        print("-------------------------")
+        # print("-------------------------")
+        # print(len(will_r))
+        # print(len(price_main))
+        # print(len(date_main))
+        # print("-------------------------")
 
         try:
             for i in range(1, len(will_r)):
@@ -70,10 +70,10 @@ class Indicator_wr():
         except Exception as e:
             print(e)
             print("-------------------------")
-            print(stock.name)
-            print(len(will_r))
-            print(len(price_main))
-            print(len(date_main))
+            # print(stock.name)
+            # print(len(will_r))
+            # print(len(price_main))
+            # print(len(date_main))
             print("-------------------------")
             pass
 

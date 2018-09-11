@@ -40,9 +40,9 @@ class InfoData:
             url = self.get_url(item_name, row.code)
             # print(url)
             df = pd.DataFrame()
-
-            pg_url = '{url}&page={page}'.format(url=url, page=1)
-            df = df.append(pd.read_html(pg_url, header=0)[0], ignore_index=True)
+            for page in range(1, 2):
+                pg_url = '{url}&page={page}'.format(url=url, page=page)
+                df = df.append(pd.read_html(pg_url, header=0)[0], ignore_index=True)
 
             df = df.dropna()
             df = df.rename(columns={'날짜': 'date', '종가': 'close', '전일비': 'diff', '시가': 'open', '고가': 'high', '저가': 'low',
@@ -55,24 +55,35 @@ class InfoData:
             df['date'] = pd.to_datetime(df['date'])
             # # # 일자(date)를 기준으로 오름차순 정렬
             df = df.sort_values(by=['date'], ascending=False)
-            stock_data = Stock_Data(stock=row, date=df.ix[1, 'date'], start=df.ix[1, 'open'], highest=df.ix[1, 'high'],
-                                        lowest=df.ix[1, 'low'], close=df.ix[1, 'close'], volume=df.ix[1, 'volume'])
-            stock_data.save()
+            # print(df.tail(1).index.values[0])
+            for idx in range(df.tail(1).index.values[0]):
+                if idx == 0:
+                    continue
+                try:
+                    stock_data = Stock_Data(stock=row, date=df.ix[idx, 'date'], start=df.ix[idx, 'open'], highest=df.ix[idx, 'high'],
+                                                lowest=df.ix[idx, 'low'], close=df.ix[idx, 'close'], volume=df.ix[idx, 'volume'])
+                    stock_data.save()
+                except Exception as e:
+                    pass
 
-            cross = Indicator_cross()
-            cross.latest_ta_golden_indicator(row)
-            macd = Indicator_macd()
-            macd.latest_ta_macd_indicator(row)
-            rsi = Indicator_rsi()
-            rsi.latest_ta_rsi_indicator(row)
-            wr = Indicator_wr()
-            wr.latest_ta_wr_indicator(row)
-
-            result = Indicator_Results()
-            result.latest_result_indicator(row)
-
-            sensitive = Senstive()
-            sensitive.get_sensitvie(row)
+            # stock_data = Stock_Data(stock=row, date=df.ix[1, 'date'], start=df.ix[1, 'open'], highest=df.ix[1, 'high'],
+            #                             lowest=df.ix[1, 'low'], close=df.ix[1, 'close'], volume=df.ix[1, 'volume'])
+            # stock_data.save()
+            #
+            # cross = Indicator_cross()
+            # cross.latest_ta_golden_indicator(row)
+            # macd = Indicator_macd()
+            # macd.latest_ta_macd_indicator(row)
+            # rsi = Indicator_rsi()
+            # rsi.latest_ta_rsi_indicator(row)
+            # wr = Indicator_wr()
+            # wr.latest_ta_wr_indicator(row)
+            #
+            # result = Indicator_Results()
+            # result.latest_result_indicator(row)
+            #
+            # sensitive = Senstive()
+            # sensitive.get_sensitvie(row)
 
 
 

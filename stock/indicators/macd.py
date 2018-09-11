@@ -53,9 +53,9 @@ class Indicator_macd():
         price_main = data.close
         date_main = data.date_d
         macd, macdsignal, macdhist = talib.MACD(price_main.values, fastperiod=12, slowperiod=26, signalperiod=9)
-        print(macd)
-        print(macdsignal)
-        print(macdhist)
+        # print(macd)
+        # print(macdsignal)
+        # print(macdhist)
         try:
             for i in range(1, len(macdhist)):
                 if macdhist[i-1] > 0 and macdhist[i-2] < 0:
@@ -65,10 +65,10 @@ class Indicator_macd():
         except Exception as e:
             print(e)
             print("-------------------------")
-            print(stock.name)
-            print(len(macdhist))
-            print(len(price_main))
-            print(len(date_main))
+            # print(stock.name)
+            # print(len(macdhist))
+            # print(len(price_main))
+            # print(len(date_main))
             print("-------------------------")
             pass
         
@@ -77,9 +77,9 @@ class Indicator_macd():
         price_main = data.close
         date_main = data.date_d
         macd, macdsignal, macdhist = talib.MACD(price_main.values, fastperiod=12, slowperiod=26, signalperiod=9)
-        print(macd)
-        print(macdsignal)
-        print(macdhist)
+        # print(macd)
+        # print(macdsignal)
+        # print(macdhist)
         try:
             if macdhist[-1] > 0 and macdhist[-2] < 0:
                 self.get_result_indicator('bid', price_main[-1], date_main[-1], stock)
@@ -88,10 +88,10 @@ class Indicator_macd():
         except Exception as e:
             print(e)
             print("-------------------------")
-            print(stock.name)
-            print(len(macdhist))
-            print(len(price_main))
-            print(len(date_main))
+            # print(stock.name)
+            # print(len(macdhist))
+            # print(len(price_main))
+            # print(len(date_main))
             print("-------------------------")
             pass
 
