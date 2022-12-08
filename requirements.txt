@@ -18,7 +18,7 @@ six==1.11.0
 TA-Lib==0.4.17
 XlsxWriter==1.0.5
 beautifulsoup4==4.6.0
-certifi==2018.4.16
+certifi==2022.12.7
 chardet==3.0.4
 lxml==4.2.3
 requests==2.19.1
